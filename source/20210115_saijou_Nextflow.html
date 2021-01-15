@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>20210115_saijou_Nextflow</title>
+  <style type="text/css">
+      code{white-space: pre-wrap;}
+      span.smallcaps{font-variant: small-caps;}
+      span.underline{text-decoration: underline;}
+      div.column{display: inline-block; vertical-align: top; width: 50%;}
+  </style>
+  <style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+<h1 id="nextflowを使ってみる">Nextflowを使ってみる</h1>
+<h3 id="参考にしたページ">参考にしたページ</h3>
+<ul>
+<li><h4 id="nextflow公式">Nextflow公式</h4></li>
+</ul>
+<p>https://www.nextflow.io/</p>
+<ul>
+<li><h4 id="ゼロから触ってみるnextflow">ゼロから触ってみるNextflow</h4></li>
+</ul>
+<p>https://qiita.com/Ken-Kuroki/items/2d67cdc368c9ebaa7198</p>
+<ul>
+<li><h4 id="nextflowを使ってみる-1">Nextflowを使ってみる</h4></li>
+</ul>
+<p>https://qiita.com/manabuishiirb/items/7dfe4dda23043ea2addb</p>
+<ul>
+<li><h4 id="nextflowからcwlで書かれたワークフローを呼び出す">NextflowからCWLで書かれたワークフローを呼び出す</h4></li>
+</ul>
+<p>https://qiita.com/yuifu/items/3699d89152f2e39fdc26#%E3%83%AF%E3%83%BC%E3%82%AF%E3%83%95%E3%83%AD%E3%83%BC%E8%A8%98%E8%BF%B0%E8%A8%80%E8%AA%9Ecwlnextflow</p>
+<h2 id="nextflowとは">Nextflowとは</h2>
+<blockquote>
+<p>「NextflowはバルセロナのCentre for Genomic Regulationによってオープンソースで開発されている科学計算用ワークフローエンジンです。GitHubのスター数はおよそ1000、現在かなり活発に開発が進められています。Java上で走るGroovyで書かれていて、可搬性、再現性、スケーラビリティなどを売りにしています。」<a href="https://qiita.com/Ken-Kuroki/items/2d67cdc368c9ebaa7198">Ken-KurokiさんのQiita</a>より</p>
+</blockquote>
+<p>　バイオインフォ解析で、環境 + 手順を固めて提供したいときに使える便利なワークフローエンジン。<a href="https://www.nextflow.io/">公式ページ</a>では、環境をDocker, Singularity または<a href="https://podman.io/">Podman</a>で提供することが推奨されている。ゆえに、面倒なツール群のインストールに悩むことなく、個々の解析環境の差に影響されることもなく、再現性の高い解析を行う事ができる。</p>
+<p>　Nextflowを動かす際のパイプラインのインストールは不要で、パイプライン名が指定されていればnextflowがGithubから自動的に取得する。（ただしインターネット接続が必要。）</p>
+<h2 id="ワークフロー言語とは">ワークフロー言語とは</h2>
+<p>ワークフローとは、複数のソフトウエアを順次実行する過程のこと。</p>
+<blockquote>
+<p>「特にNGS解析では、複数のツールを順次データが流れていくので、ワークフローの正確な記述とそれに基づく実行が、データの再現性確保の技術的要件となっている。</p>
+</blockquote>
+<blockquote>
+<p>ワークフローは素課程（ステップ）の連なりとして定義される。各ステップは入出力（ファイル）とソフトウェア実行スクリプト（ソフトウェア、バージョン、実行オプション）から構成され、ステップの間をデータが流れていくイメージである。このようなワークフローを記述するのがワークフロー記述言語（Workflow language）である。」<a href="https://qiita.com/yuifu/items/3699d89152f2e39fdc26#%E3%83%AF%E3%83%BC%E3%82%AF%E3%83%95%E3%83%AD%E3%83%BC%E8%A8%98%E8%BF%B0%E8%A8%80%E8%AA%9Ecwlnextflow">yuifuさんのQiita</a>より</p>
+</blockquote>
+<p>ワークフロー記述言語には、ざっくり言うと、ドメイン固有言語（DSL）型とマークアップ言語（ML）型がある（下表）。</p>
+<table>
+<thead>
+<tr class="header">
+<th></th>
+<th>DSL型</th>
+<th>ML型</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>長所</td>
+<td>柔軟な記述が可能（例：ループ、条件分岐）</td>
+<td>機械可読、他の記述形式との変換が容易</td>
+</tr>
+<tr class="even">
+<td>短所</td>
+<td>独自の文法を習得する必要がある</td>
+<td>複雑な処理（〜ループとか）を書くのが苦手</td>
+</tr>
+<tr class="odd">
+<td>向いていそうな用途</td>
+<td>人数が限られたチーム内</td>
+<td>大人数での開発</td>
+</tr>
+<tr class="even">
+<td>例</td>
+<td><strong>Nextflow</strong>, Snakemake</td>
+<td>Galaxy, Common Workflow Language (CWL)</td>
+</tr>
+</tbody>
+</table>
+<h2 id="nextflowの例">Nextflowの例</h2>
+<p>現在、主にバイオインフォ用途の多くのパイプラインが登録されている。</p>
+<ul>
+<li><p>nf-core/hic (Analysis of Chromosome Conformation Capture data (Hi-C))</p></li>
+<li><p>nf-core/chipseq (ChIP-seq peak-calling, QC and differential analysis pipeline.)</p></li>
+<li><p>nf-core/scrnaseq (A single-cell RNAseq pipeline for 10X genomics data)</p></li>
+<li><p>nf-core/nanoseq (Nanopore demultiplexing, QC and alignment pipeline)</p></li>
+<li><p>nf-core/rna-seq (RNA sequencing analysis pipeline using STAR, RSEM, HISAT2 or Salmon with gene/isoform counts and extensive quality control.)</p></li>
+<li><p>nf-core/ampliseq (16S rRNA amplicon sequencing analysis workflow using QIIME2)</p>
+<p>などなど、、、</p></li>
+</ul>
+<p><a href="https://nf-co.re/pipelines">nf-coreリポジトリ</a>に登録されていないワークフローも、githubに<a href="https://github.com/nextflow-io/awesome-nextflow/">awesome-nextflow</a>としてまとめられている。covid-19関連だけでも6つ入っていた (20210113現在) 。</p>
+<h2 id="nextflowを用いる利点">Nextflowを用いる利点</h2>
+<p>以下の利点が考えられる。</p>
+<ul>
+<li><p>同じツール、同じ手順で解析を行うことにより、実験の再現性が高まる。</p></li>
+<li><p>バイオインフォの専門性が不足した研究者でも、少ない手順で解析を行えるため誤った結論に至りづらくなる。</p></li>
+<li><p>研究室内のサーバーで動かすことを前提に組まれたパイプラインを、広く世界に共有することができる。</p></li>
+</ul>
+<p>公式サイトにテンプレートが公開されているので、こちらを用いれば（専門性がある人ならば）自分のパイプラインを固めて公開するハードルは低い。らしい。</p>
+<h2 id="nextflowのインストール">Nextflowのインストール</h2>
+<p><a href="https://nf-co.re/usage/installation">公式サイト</a>より。</p>
+<p>まず環境を確認する。Java 8以上が必要なので、</p>
+<p><code>java -version</code>で確認する。</p>
+<p>インストールはシンプルで、</p>
+<p><code>curl -s https://get.nextflow.io | bash</code></p>
+<p>または、<code>wget -qO- https://get.nextflow.io | bash</code></p>
+<p>または、<a href="https://bioconda.github.io/recipes/nextflow/README.html">bioconda</a>から<code>conda install nextflow</code>でインストールできる。</p>
+<ul>
+<li>テスト</li>
+</ul>
+<p><code>nextflow run hello</code>と入力し、Hello worldが動けばOK。こちらは、実際にはnextflowのgithubから自動的にhelloというスクリプトが取得されて起動している。</p>
+<figure>
+<img src="/Users/saijoueiko/Desktop/スクリーンショット%202021-01-13%2011.58.47.png" alt="スクリーンショット 2021-01-13 11.58.47" /><figcaption>スクリーンショット 2021-01-13 11.58.47</figcaption>
+</figure>
+<h2 id="公式-get-started-に沿って動かしてみる">公式 (Get started) に沿って動かしてみる</h2>
+<p>まずは、<code>turorial.nf</code>というスクリプトを作って保存する。</p>
+<pre class="nextflow"><code>#!/usr/bin/env nextflow
+
+params.str = &#39;Hello world!&#39;
+
+process splitLetters {
+
+    output:
+    file &#39;chunk_*&#39; into letters
+
+    &quot;&quot;&quot;
+    printf &#39;${params.str}&#39; | split -b 6 - chunk_
+    &quot;&quot;&quot;
+}
+
+
+process convertToUpper {
+
+    input:
+    file x from letters.flatten()
+
+    output:
+    stdout result
+
+    &quot;&quot;&quot;
+    cat $x | tr &#39;[a-z]&#39; &#39;[A-Z]&#39;
+    &quot;&quot;&quot;
+}
+
+result.view { it.trim() }</code></pre>
+<p>このスクリプトは２つのプロセス（splitLettersとconvertToUpper）で構成されている。</p>
+<p>splitLettersは、文字列を 6 文字ずつの固まりに分割し、それぞれを chunk_ という接頭辞を持つファイルに書き出す。</p>
+<p>convertToUpperは、これらのファイルを受け取って、内容を大文字に変換する。</p>
+<p>結果として得られた文字列は<code>result</code>チャンネルに出力され、最終的な出力は<code>View</code>演算子によって出力される。</p>
+<p>さっそくターミナルに入力して動かしてみる。</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="ex">nextflow</span> run tutorial.nf</a></code></pre></div>
+<p>出力は以下のようになる。</p>
+<figure>
+<img src="/Users/saijoueiko/Desktop/スクリーンショット%202021-01-13%2012.42.07.png" alt="スクリーンショット 2021-01-13 12.42.07" /><figcaption>スクリーンショット 2021-01-13 12.42.07</figcaption>
+</figure>
+<p>最初のプロセスは1回、次のプロセスは２回実行されていることがわかる。最終的に結果の文字列が出力される。</p>
+<p>convertToUpperプロセスは並行して実行されるので、Helloの固まりとworldの固まりは異なる順序で出力される場合もあり。</p>
+<h2 id="改変してみる">改変してみる</h2>
+<p>Nextflowは、パイプライン内で行われたすべてのプロセスを追跡して、保持する。もしスクリプトの一部を改変した場合は、実際に変化した部分だけが実行される。変更されていない部分はスキップされ、代わりにキャッシュされた結果が使われる。</p>
+<p>なので、パイプラインを改変してテストするときに、待ち時間が短くすむようになっている。</p>
+<p>では、convertToUpper部分を改変してみる。</p>
+<pre><code>process convertToUpper {
+
+    input:
+    file x from letters
+
+    output:
+    stdout result
+
+    &quot;&quot;&quot;
+    rev $x
+    &quot;&quot;&quot;
+}</code></pre>
+<p>同じ名前で保存し、<code>-resume</code>をつけて実行してみる。</p>
+<p><code>nextflow run tutorial.nf -resume</code></p>
+<p>以下のように実行される。</p>
+<figure>
+<img src="/Users/saijoueiko/Desktop/スクリーンショット%202021-01-13%2013.38.00.png" alt="スクリーンショット 2021-01-13 13.38.00" /><figcaption>スクリーンショット 2021-01-13 13.38.00</figcaption>
+</figure>
+<p>プロセス<code>splitletters</code>はスキップされる。（16進数で表されるIDが同一）結果はキャッシュから取得されている。２つ目のプロセスは期待通り実行されて、文字列が逆向きで表示される。</p>
+<p><code>$PWD/work</code>にキャッシュが保存され続けるので、ディスク容量の圧迫を避けるために時々クリーンナップをする必要がある。</p>
+<h2 id="仮引数の設定">仮引数の設定</h2>
+<p>パイプラインの仮引数の設定は、変数名の前に接頭語<code>param.</code>をつけて宣言する。</p>
+<p>コマンドラインでは、仮引数の名前の前に–をつけて仮引数の値を設定することができる。</p>
+<p><code>--paramName</code>のように使用。</p>
+<p>さっそくこの変数に別の入力を与えてみる。</p>
+<p><code>nextflow run tutorial.nf --str 'BonJour le monde'</code></p>
+<p>この場合、Hello world!のかわりに、BonJour le mondeが６文字ずつ区切られて逆向きに表示される。</p>
+<figure>
+<img src="/Users/saijoueiko/Desktop/スクリーンショット%202021-01-13%2014.25.53.png" alt="スクリーンショット 2021-01-13 14.25.53" /><figcaption>スクリーンショット 2021-01-13 14.25.53</figcaption>
+</figure>
+<p>このように、param.strの内容は、–strで与える事ができる。</p>
+<h2 id="ramdaqを動かしてみる">ramdaqを動かしてみる</h2>
+<p>実際に、バイオインフォのパイプラインをユーザーとして使う場合について。</p>
+<p><a href="https://github.com/rikenbit/ramdaq">ramdaqのgithub</a>を参考に行う。</p>
+<ol type="1">
+<li><h4 id="nextflowのインストール-1">Nextflowのインストール</h4>
+<p>（上記）</p></li>
+<li><h4 id="dockerおよびsinguralityのインストール">DockerおよびSinguralityのインストール</h4>
+<p>（これも略、中戸さんのおかげでみんな入っているはず。感謝。）</p></li>
+<li><h4 id="パイプラインを自動でインストールし最小限のデータセットでテスト">パイプラインを自動でインストールし、最小限のデータセットでテスト</h4>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="ex">nextflow</span> run rikenbit/ramdaq -profile test,<span class="op">&lt;</span>docker/singularity<span class="op">&gt;</span></a></code></pre></div>
+<figure>
+<img src="/Users/saijoueiko/Library/Application%20Support/typora-user-images/image-20210113155916824.png" alt="image-20210113155916824" /><figcaption>image-20210113155916824</figcaption>
+</figure>
+<p>うまく動かないときは、nf-core/configをいじる必要がある。</p></li>
+<li><h4 id="自分のデータ解析を走らせよう">自分のデータ解析を走らせよう！</h4>
+<p>（ヒト、マウスなら、レファレンスデータはダウンロードせずとも使用できる）</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="ex">nextflow</span> run rikenbit/ramdaq -profile <span class="op">&lt;</span>docker/singularity<span class="op">&gt;</span> --reads <span class="st">&#39;*_R{1,2}.fastq.gz&#39;</span> --genome GRCh38</a></code></pre></div></li>
+<li><h4 id="レファレンスデータはローカルパスを記述すればそちらも使用できるlocal_annot_dirオプション">レファレンスデータは、ローカルパスを記述すればそちらも使用できる。–local_annot_dirオプション</h4>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="ex">nextflow</span> run rikenbit/ramdaq -profile <span class="op">&lt;</span>docker/singularity<span class="op">&gt;</span> --reads <span class="st">&#39;*_R{1,2}.fastq.gz&#39;</span> --genome GRCh38 --local_annot_dir <span class="op">&lt;</span>The directory path where the reference genome and annotations are placed<span class="op">&gt;</span></a></code></pre></div></li>
+<li><h4 id="実際に解析する際はbclファイルをfastqに変換するramdaq_bcl2fastqを通してから行うこちらもnextflowによって提供されている">実際に解析する際は、BCLファイルをfastqに変換する<a href="https://github.com/rikenbit/ramdaq_bcl2fastq">ramdaq_bcl2fastq</a>を通してから行う。こちらも<strong>Nextflow</strong>によって提供されている。</h4></li>
+<li><h4 id="マウスシングルエンドアンストランデッドのテストデータでも試してみる">マウス、シングルエンド、アンストランデッドのテストデータでも試してみる。</h4>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="ex">nextflow</span> run rikenbit/ramdaq -profile test_SE_UST_M,docker --outdir results_DLtest_SE_UST_M</a></code></pre></div>
+<p>上記コマンドを実行したところ、ローカルに、results_DLtest_SE_UST_Mディレクトリが生成された。</p></li>
+</ol>
+<h2 id="ramdaqの結果">ramdaqの結果</h2>
+<figure>
+<img src="/Users/saijoueiko/Desktop/スクリーンショット%202021-01-13%2016.24.27.png" alt="スクリーンショット 2021-01-13 16.24.27" /><figcaption>スクリーンショット 2021-01-13 16.24.27</figcaption>
+</figure>
+<p>こちらの<strong>pipeline_info</strong>を見ると、</p>
+<figure>
+<img src="/Users/saijoueiko/Desktop/スクリーンショット%202021-01-13%2016.26.01.png" alt="スクリーンショット 2021-01-13 16.26.01" /><figcaption>スクリーンショット 2021-01-13 16.26.01</figcaption>
+</figure>
+<p>さまざまなレポートが出力されている。</p>
+<p><a href="file:///Users/saijoueiko/results_DLtest_SE_UST_M/pipeline_info/execution_report.html">execution_report.html</a></p>
+<p><a href="file:///Users/saijoueiko/results_DLtest_SE_UST_M/pipeline_info/execution_timeline.html">execution_timeline.html</a></p>
+<p><a href="file:///Users/saijoueiko/results_DLtest_SE_UST_M/pipeline_info/pipeline_report.html">pipeline_report.html</a></p>
+<p><a href="file:///Users/saijoueiko/results_DLtest_SE_UST_M/pipeline_info/results_description.html">results_description.html</a></p>
+<p><strong>featureCount</strong>には</p>
+<figure>
+<img src="/Users/saijoueiko/Desktop/スクリーンショット%202021-01-13%2016.31.17.png" alt="スクリーンショット 2021-01-13 16.31.17" /><figcaption>スクリーンショット 2021-01-13 16.31.17</figcaption>
+</figure>
+<p>TPMなどの情報が出力される。</p>
+<p>ここまで生成できれば下流の解析に持っていけるだろう。</p>
+<h2 id="まとめ">まとめ</h2>
+<p>Nextflow, Dockerをインストールすれば、バイオインフォに明るくない研究者でもデータ解析を始めることができるので、利用する側としては大変ありがたいツールだと感じた。解析を提供する側としても、Nextflowで固めて公共のレポジトリに置くことで、解析の信頼性・再現性が高まるので（Groovyの記述法を学ぶ必要はあるが）導入する価値があるのではないかな。</p>
+<p>余談：DockerよりもSinguralityよりも新しい、Podmanというコンテナがあることを今回初めて知った。今後普及するかも知れないので、詳細を調べようと思った。</p>
+<h2 id="オマケ引数一覧">オマケ：引数一覧</h2>
+<h4 id="main-arguments">Main arguments</h4>
+<p>-profile -c –reads –single_end –stranded</p>
+<h4 id="reference-genomes-and-annotations">Reference genomes and annotations</h4>
+<p>–genome –saveReference –local_annot_dir</p>
+<h4 id="other-command-line-parameters">Other command line parameters</h4>
+<p>–outdir -name -resume –max_memory –max_time –max_cpus –monochrome_logs</p>
+<h4 id="parameters-for-each-tools">Parameters for each tools</h4>
+<p>個々のプロセスに対応したパラメータもあります。</p>
+<p>Fastqmcf Hisat2 featureCounts</p>
+<h4 id="results-report-options">Results report options</h4>
+<p>–sampleLevel</p>
+</body>
+</html>
